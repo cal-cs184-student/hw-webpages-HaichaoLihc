@@ -1,112 +1,332 @@
-<html>
-	<head>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-		<style>
-			h1 {
-				text-align: center;
-			}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CS184 HW1 Write-Up</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f4f6f8;
+        --panel: #ffffff;
+        --ink: #1f2937;
+        --muted: #5b6472;
+        --line: #d6dde6;
+        --accent: #0f6d7a;
+      }
 
-			.container {
-				margin: 0 auto;
-				padding: 60px 20%;
-			}
+      * {
+        box-sizing: border-box;
+      }
 
-			figure {
-				text-align: center;
-			}
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 15% 10%, #dde8ef 0, transparent 38%),
+          radial-gradient(circle at 85% 5%, #e8f0e0 0, transparent 35%),
+          var(--bg);
+      }
 
-			img {
-				display: inline-block;
-			}
+      .container {
+        width: min(1080px, 94vw);
+        margin: 42px auto;
+      }
 
-			body {
-				font-family: 'Inter', sans-serif;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-		<h1>CS184/284A Spring 2025 Homework 1 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
 
-		<br>
+      .hero {
+        padding: 28px;
+        margin-bottom: 22px;
+      }
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
-		
-		<br>
+      h1,
+      h2,
+      h3 {
+        font-family: "Source Serif 4", serif;
+        margin: 0;
+      }
 
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+      h1 {
+        font-size: clamp(1.9rem, 4vw, 2.4rem);
+        text-align: center;
+      }
 
-		<figure>
-			<img src="lion.jpg" alt="Lion" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+      .meta {
+        margin-top: 14px;
+        text-align: center;
+        color: var(--muted);
+        line-height: 1.6;
+      }
 
-		<!--
-		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
-		-->
+      .meta a {
+        color: var(--accent);
+      }
 
-		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+      section {
+        padding: 24px;
+        margin-bottom: 18px;
+      }
 
-		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      h2 {
+        font-size: 1.55rem;
+        margin-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 8px;
+      }
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>
-		
-		<h2>Task 2: Antialiasing by Supersampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      h3 {
+        font-size: 1.1rem;
+        margin: 18px 0 10px;
+      }
 
-		<h2>Task 3: Transforms</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      p,
+      li {
+        line-height: 1.65;
+      }
 
-		<h2>Task 4: Barycentric coordinates</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      ul {
+        margin: 10px 0 12px 20px;
+      }
 
-		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      .image-single {
+        margin-top: 14px;
+      }
 
-		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      .image-grid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 14px;
+      }
 
-		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      .sample-rate-grid {
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+        gap: 18px;
+      }
 
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
-		</div>
-	</body>
+      figure {
+        margin: 0;
+      }
+
+      img {
+        width: 100%;
+        display: block;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      figcaption {
+        margin-top: 6px;
+        font-size: 0.93rem;
+        color: var(--muted);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="panel hero">
+        <h1>CS184/284A Spring 2025 Homework 1 Write-Up</h1>
+        <div class="meta">
+          <div><strong>Name:</strong> Haichao Li, Aaron</div>
+          <div>
+            <strong>Webpage:</strong>
+            <a href="https://cal-cs184-student.github.io/hw-webpages-HaichaoLihc/"
+              >https://cal-cs184-student.github.io/hw-webpages-HaichaoLihc/</a
+            >
+          </div>
+          <div>
+            <strong>GitHub:</strong>
+            <a href="https://github.com/cal-cs184-student/hw1-rasterizer-aaron"
+              >https://github.com/cal-cs184-student/hw1-rasterizer-aaron</a
+            >
+          </div>
+        </div>
+      </header>
+
+      <section class="panel">
+        <h2>Overview</h2>
+        <p>
+          In this homework, I implemented triangle rasterization, supersampling-based
+          antialiasing, and hierarchical transformations in the SVG pipeline. The
+          work focused on getting correct inside tests, restructuring the sample
+          buffer for multisampling, and composing transforms to create both articulated
+          character motion and viewport rotation.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Task 1: Drawing Single-Color Triangles</h2>
+        <p>
+          I rasterize triangles by first finding the triangle's bounding box
+          (min/max x,y) and clamping it to the screen. Then I scan every pixel in
+          that box and test the pixel center (x+0.5, y+0.5) with three edge
+          functions. If all three edge values have the inside sign, I color that
+          pixel. I update edge values incrementally across x/y, so each next test is
+          just adds, and I write directly to <code>sample_buffer</code>.
+        </p>
+        <p>
+          This is no worse than standard bounding-box sampling because it does the
+          same amount of traversal: one pass over pixels inside the bounding box,
+          with constant work per pixel. So time complexity is
+          <code>O(bounding_box_width * bounding_box_height)</code>, same as any
+          method that checks each sample in the triangle's bounding box.
+        </p>
+
+        <h3>Special optimizations (task 1 extra credit)</h3>
+        <ul>
+          <li>
+            Because the edge function is affine in input x and y, I precompute
+            coefficients and increment values at neighboring pixels instead of
+            recomputing full expressions each sample.
+          </li>
+          <li>
+            I determine winding sign once (from signed area), so the inside test uses
+            a single consistent sign check.
+          </li>
+        </ul>
+
+        <figure class="image-single">
+          <img src="screenshot_2-17_0-42-0.png" alt="Task 1 triangle rasterization" />
+          <figcaption>Task 1 rasterization result.</figcaption>
+        </figure>
+
+        <div class="image-grid">
+          <figure>
+            <img src="optimized.png" alt="Task 1 optimized" />
+            <figcaption>Optimized version.</figcaption>
+          </figure>
+          <figure>
+            <img src="unoptimized.png" alt="Task 1 unoptimized" />
+            <figcaption>Unoptimized version.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Task 2: Antialiasing by Supersampling</h2>
+        <ul>
+          <li>For each triangle, I still find its bounding box.</li>
+          <li>For each pixel in that box, I split the pixel into a small grid.</li>
+          <li>I test each small sample point to see if it is inside the triangle.</li>
+          <li>If inside, I color that sample in <code>sample_buffer</code>.</li>
+          <li>
+            After all drawing is done, I average all samples of each pixel and write
+            that average to the final framebuffer.
+          </li>
+        </ul>
+
+        <h3>Data structure</h3>
+        <ul>
+          <li><code>sample_buffer</code> is a 1D array.</li>
+          <li>Each pixel's samples are stored together.</li>
+          <li>
+            Pixel <code>(x, y)</code> starts at
+            <code>(y * width + x) * sample_rate</code>.
+          </li>
+        </ul>
+
+        <h3>Why supersampling helps</h3>
+        <ul>
+          <li>Single-sample drawing makes triangle edges look jagged.</li>
+          <li>With many samples, edge pixels can be partly covered.</li>
+          <li>Averaging those samples gives in-between colors on edges.</li>
+          <li>This reduces the stair-step effect and smooths boundaries.</li>
+        </ul>
+
+        <h3>Pipeline changes</h3>
+        <ul>
+          <li>
+            <code>set_sample_rate</code> and <code>set_framebuffer_target</code> now
+            resize <code>sample_buffer</code> to
+            <code>width * height * sample_rate</code>.
+          </li>
+          <li>
+            <code>fill_pixel</code> now fills all samples of that pixel (for
+            points/lines).
+          </li>
+          <li>
+            <code>rasterize_triangle</code> now writes per-subsample instead of one
+            color per pixel.
+          </li>
+          <li>
+            <code>resolve_to_framebuffer</code> averages each pixel's samples into one
+            final color.
+          </li>
+        </ul>
+
+        <h3>Sample rate comparison (1, 4, 16)</h3>
+        <div class="image-grid sample-rate-grid">
+          <figure>
+            <img src="screenshot_2-17_1-27-18.png" alt="Sample rate 1" />
+            <figcaption>Sample rate = 1</figcaption>
+          </figure>
+          <figure>
+            <img src="screenshot_2-17_1-27-20.png" alt="Sample rate 4" />
+            <figcaption>Sample rate = 4</figcaption>
+          </figure>
+          <figure>
+            <img src="screenshot_2-17_1-27-22.png" alt="Sample rate 16" />
+            <figcaption>Sample rate = 16</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Task 3: Transforms</h2>
+        <p>
+          For Task 3, I modified <code>svg/transforms/robot.svg</code> so cubeman is
+          waving instead of standing in a neutral pose. I used hierarchical
+          transforms to rotate and reposition the limbs: the right arm is rotated
+          sharply upward and the lower right arm is additionally bent to form a clear
+          wave gesture. I then adjusted the left arm to angle downward slightly so
+          the pose feels asymmetric and more natural.
+        </p>
+        <p>
+          I also added small rotations to the legs with slight horizontal offsets to
+          suggest a weight shift, making the character look balanced while waving
+          rather than perfectly rigid.
+        </p>
+
+        <figure class="image-single">
+          <img src="screenshot_2-17_2-11-16.png" alt="Waving cubeman" />
+          <figcaption>Modified robot pose for Task 3.</figcaption>
+        </figure>
+
+        <h3>Task 3 Extra Credit: Viewport Rotation</h3>
+        <p>
+          I added a viewport-rotation feature with two keys: <strong>J</strong>
+          rotates the view by +5 degrees and <strong>K</strong> rotates by -5
+          degrees. To do this, I inserted one extra transform in the rendering
+          pipeline. Before, points were mapped as SVG -> NDC -> screen; now they go
+          SVG -> NDC -> rotated NDC -> screen.
+        </p>
+        <p>
+          I rotate in NDC around the center (translate to x=0.5,y=0.5, then rotate,
+          then translate back), so the whole scene rotates like a camera view while
+          pan/zoom still behave normally. I also applied the same transform to the
+          canvas border so it stays aligned with the SVG.
+        </p>
+
+        <figure class="image-single">
+          <img src="screenshot_2-17_2-16-5.png" alt="Viewport rotation" />
+          <figcaption>Viewport rotation extra credit.</figcaption>
+        </figure>
+      </section>
+    </div>
+  </body>
 </html>
