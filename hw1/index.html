@@ -161,11 +161,20 @@
       <section class="panel">
         <h2>Overview</h2>
         <p>
-          In this homework, I implemented triangle rasterization, supersampling-based
-          antialiasing, and hierarchical transformations in the SVG pipeline. The
-          work focused on getting correct inside tests, restructuring the sample
-          buffer for multisampling, and composing transforms to create both articulated
-          character motion and viewport rotation.
+          In this homework, I implemented a complete software rasterization pipeline
+          across Tasks 1-6, and finished the creative extra credit (Task 7). The
+          core work includes single-color triangle rasterization with robust inside
+          tests, supersampling antialiasing, hierarchical transforms, barycentric
+          interpolation for per-vertex color, texture mapping with nearest/bilinear
+          pixel filtering, and mipmap-based level sampling for minification.
+        </p>
+        <p>
+          I also added practical tooling for evaluation and write-up production,
+          including reproducible render configurations for different sampling modes.
+          For the extra credit submission, I generated an 800x800 procedural artwork
+          using a Python script that emits many <code>colortri</code> primitives to
+          build layered gradients and geometric swirl structures compatible with the
+          course rasterizer.
         </p>
       </section>
 
@@ -465,6 +474,43 @@
             pyramid) in exchange for more stable texture filtering.
           </li>
         </ul>
+      </section>
+
+      <section class="panel">
+        <h2>Task 7 (Extra Credit): Draw Something Creative</h2>
+        <p>
+          I created a procedural artwork and saved it as
+          <code>docs/competition.svg</code> at 800x800 resolution.
+        </p>
+
+        <figure class="image-single">
+          <img src="task7_competition_800.png" alt="Task 7 competition artwork" />
+          <figcaption>Procedural competition artwork rendered by the rasterizer.</figcaption>
+        </figure>
+
+        <h3>How it was generated</h3>
+        <p>
+          I wrote a generator script at
+          <code>src/generate_competition_svg.py</code>. The script procedurally emits
+          many <code>colortri</code> elements in three layers:
+        </p>
+        <ul>
+          <li>
+            A triangulated background grid that creates a smooth color gradient.
+          </li>
+          <li>
+            A multi-band polar swirl where radius is modulated by sine/cosine terms,
+            then tessellated into triangle strips.
+          </li>
+          <li>
+            A central starburst accent made of additional triangles with varying hue.
+          </li>
+        </ul>
+        <p>
+          Colors are generated in HSV space and converted to RGB, producing continuous
+          gradients and strong contrast while staying within primitives supported by
+          this homework rasterizer.
+        </p>
       </section>
     </div>
   </body>
