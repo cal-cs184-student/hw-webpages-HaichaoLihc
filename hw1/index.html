@@ -172,7 +172,7 @@
           I also added practical tooling for evaluation and write-up production,
           including reproducible render configurations for different sampling modes.
           For the extra credit submission, I generated an 800x800 procedural artwork
-          using a Python script that emits many <code>colortri</code> primitives to
+          using a C++ generator that emits many <code>colortri</code> primitives to
           build layered gradients and geometric swirl structures compatible with the
           course rasterizer.
         </p>
@@ -538,7 +538,7 @@
         <h3>How it was generated</h3>
         <p>
           I wrote a generator script at
-          <code>src/generate_competition_svg.py</code>. The script procedurally emits
+          <code>src/generate_competition_svg.cpp</code>. The generator procedurally emits
           many <code>colortri</code> elements in three layers:
         </p>
         <ul>
