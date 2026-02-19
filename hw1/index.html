@@ -327,6 +327,111 @@
           <figcaption>Viewport rotation extra credit.</figcaption>
         </figure>
       </section>
+
+      <section class="panel">
+        <h2>Task 4: Barycentric Coordinates</h2>
+        <p>
+          I implemented barycentric interpolation in
+          <code>RasterizerImp::rasterize_interpolated_color_triangle(...)</code>.
+          For each sample point in the triangle bounding box, I evaluate edge
+          functions to determine inside/outside and convert them into barycentric
+          weights. The interpolated color is then:
+          <code>alpha * c0 + beta * c1 + gamma * c2</code>, where
+          <code>alpha + beta + gamma = 1</code>.
+        </p>
+        <p>
+          This gives a smooth color transition across triangle interiors and produces
+          the expected color wheel visualization.
+        </p>
+
+        <figure class="image-single">
+          <img src="task4_test7_sr1.png" alt="Task 4 test7 sample rate 1" />
+          <figcaption>svg/basic/test7.svg at sample rate 1.</figcaption>
+        </figure>
+      </section>
+
+      <section class="panel">
+        <h2>Task 5: Pixel Sampling for Texture Mapping</h2>
+        <p>
+          I implemented texture mapping in
+          <code>RasterizerImp::rasterize_textured_triangle(...)</code> by
+          interpolating UV coordinates at each sample point and passing them to
+          texture sampling. I implemented both
+          <code>Texture::sample_nearest</code> and
+          <code>Texture::sample_bilinear</code>, and selected between them via the
+          pixel sampling mode (<code>P_NEAREST</code> vs <code>P_LINEAR</code>).
+        </p>
+        <p>
+          Nearest sampling is faster but more jagged on high-frequency regions.
+          Bilinear sampling blends neighboring texels and generally looks smoother.
+          Increasing sample rate mainly helps geometric edge antialiasing.
+        </p>
+
+        <h3>Nearest vs Bilinear at 1 and 16 Samples Per Pixel</h3>
+        <div class="image-grid sample-rate-grid">
+          <figure>
+            <img src="task5_nearest_sr1.png" alt="Task 5 nearest sr1" />
+            <figcaption>P_NEAREST, sample rate = 1</figcaption>
+          </figure>
+          <figure>
+            <img src="task5_nearest_sr16.png" alt="Task 5 nearest sr16" />
+            <figcaption>P_NEAREST, sample rate = 16</figcaption>
+          </figure>
+          <figure>
+            <img src="task5_bilinear_sr1.png" alt="Task 5 bilinear sr1" />
+            <figcaption>P_LINEAR, sample rate = 1</figcaption>
+          </figure>
+          <figure>
+            <img src="task5_bilinear_sr16.png" alt="Task 5 bilinear sr16" />
+            <figcaption>P_LINEAR, sample rate = 16</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Task 6: Level Sampling with Mipmaps</h2>
+        <p>
+          I extended texture sampling to support mip levels by implementing
+          <code>Texture::sample</code> and <code>Texture::get_level</code>. For each
+          shaded sample, I compute <code>p_uv</code>, <code>p_dx_uv</code>, and
+          <code>p_dy_uv</code> in rasterization, then estimate level-of-detail from
+          UV derivatives (scaled by base texture resolution).
+        </p>
+        <ul>
+          <li><code>L_ZERO</code>: always sample mip level 0.</li>
+          <li>
+            <code>L_NEAREST</code>: compute level and sample the nearest mip level.
+          </li>
+          <li>
+            <code>L_LINEAR</code>: interpolate between adjacent mip levels
+            (trilinear when combined with <code>P_LINEAR</code>).
+          </li>
+        </ul>
+        <p>
+          Mipmap level sampling improves minification quality and reduces aliasing,
+          at additional memory and computation cost.
+        </p>
+
+        <h3>Required Comparison Set</h3>
+        <div class="image-grid sample-rate-grid">
+          <figure>
+            <img src="task6_lzero_pnearest.png" alt="Task 6 lzero pnearest" />
+            <figcaption>L_ZERO + P_NEAREST</figcaption>
+          </figure>
+          <figure>
+            <img src="task6_lzero_plinear.png" alt="Task 6 lzero plinear" />
+            <figcaption>L_ZERO + P_LINEAR</figcaption>
+          </figure>
+          <figure>
+            <img src="task6_lnearest_pnearest.png" alt="Task 6 lnearest pnearest" />
+            <figcaption>L_NEAREST + P_NEAREST</figcaption>
+          </figure>
+          <figure>
+            <img src="task6_lnearest_plinear.png" alt="Task 6 lnearest plinear" />
+            <figcaption>L_NEAREST + P_LINEAR</figcaption>
+          </figure>
+        </div>
+      </section>
     </div>
   </body>
 </html>
