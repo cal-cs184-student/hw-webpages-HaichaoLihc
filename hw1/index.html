@@ -228,14 +228,38 @@
 
       <section class="panel">
         <h2>Task 2: Antialiasing by Supersampling</h2>
+        <h3>What I Did and How Supersampling Reduces Aliasing</h3>
         <ul>
           <li>For each triangle, I still find its bounding box.</li>
-          <li>For each pixel in that box, I split the pixel into a small grid.</li>
-          <li>I test each small sample point to see if it is inside the triangle.</li>
-          <li>If inside, I color that sample in <code>sample_buffer</code>.</li>
           <li>
-            After all drawing is done, I average all samples of each pixel and write
-            that average to the final framebuffer.
+            Let <code>N = sqrt(sample_rate)</code>. For each pixel
+            <code>(x, y)</code> in that box, I evaluate an
+            <code>N x N</code> grid of subpixel points at
+            <code>(x + (i + 0.5)/N, y + (j + 0.5)/N)</code>.
+          </li>
+          <li>
+            I run the same edge-function inside test at each subpixel position.
+          </li>
+          <li>
+            If inside, I write that subpixel color into
+            <code>sample_buffer</code>.
+          </li>
+          <li>
+            After all rasterization is done, I average each pixel's samples and
+            write that average to the final framebuffer in
+            <code>resolve_to_framebuffer</code>.
+          </li>
+          <li>
+            For boundary pixels, this average estimates the fraction of the pixel
+            covered by the triangle (for example, around 6/16 coverage).
+          </li>
+          <li>
+            With one sample, a boundary pixel becomes fully on or fully off, which
+            creates sharp stair-step transitions between neighboring pixels.
+          </li>
+          <li>
+            Supersampling converts those hard jumps into gradual intensity changes
+            across edge pixels, so high-frequency jagged artifacts are reduced.
           </li>
         </ul>
 
@@ -293,6 +317,29 @@
             <figcaption>Sample rate = 16</figcaption>
           </figure>
         </div>
+        <ul>
+          <li>
+            At sample rate 1, each edge pixel is decided by one center sample, so
+            coverage is binary and jaggies are the strongest.
+          </li>
+          <li>
+            At sample rate 4, pixels can represent partial coverage in larger steps,
+            so edges become visibly smoother and thin features alias less.
+          </li>
+          <li>
+            At sample rate 16, coverage is much finer, so edge transitions are even
+            smoother; the gain is smaller than 1 to 4.
+          </li>
+          <li>
+            The difference appears mainly along boundaries; fully inside/outside
+            pixels look the same at all sample rates.
+          </li>
+          <li>
+            Runtime and memory cost increase roughly linearly with
+            <code>sample_rate</code> due to more sample tests, writes, and resolve
+            work.
+          </li>
+        </ul>
       </section>
 
       <section class="panel">
