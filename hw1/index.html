@@ -397,6 +397,12 @@
           <code>p_dy_uv</code> in rasterization, then estimate level-of-detail from
           UV derivatives (scaled by base texture resolution).
         </p>
+        <p>
+          For this task I used my own texture image
+          <code>img/img.png</code> through a custom SVG setup
+          (<code>svg/texmap/task6_custom.svg</code>), then captured the four required
+          combinations using the GUI screenshot hotkey.
+        </p>
         <ul>
           <li><code>L_ZERO</code>: always sample mip level 0.</li>
           <li>
@@ -431,6 +437,34 @@
             <figcaption>L_NEAREST + P_LINEAR</figcaption>
           </figure>
         </div>
+
+        <h3>Discussion and Tradeoffs</h3>
+        <p>
+          In this checker/stripe test image, the differences are clear in the
+          high-frequency warped regions. <code>P_LINEAR</code> visibly smooths stripe
+          boundaries, while <code>L_NEAREST</code> gives more stable detail than
+          <code>L_ZERO</code> around the dense center pattern. The contrast becomes
+          even more apparent with zoom-in and pixel inspection.
+        </p>
+        <ul>
+          <li>
+            Pixel sampling: <code>P_NEAREST</code> is faster; <code>P_LINEAR</code>
+            gives smoother local texture transitions.
+          </li>
+          <li>
+            Level sampling: <code>L_ZERO</code> is cheapest;
+            <code>L_NEAREST</code>/<code>L_LINEAR</code> improve minification
+            behavior.
+          </li>
+          <li>
+            Sample rate: higher supersampling improves geometric edge antialiasing
+            but increases time and sample buffer memory.
+          </li>
+          <li>
+            Mipmaps increase texture memory (roughly about one-third extra for a full
+            pyramid) in exchange for more stable texture filtering.
+          </li>
+        </ul>
       </section>
     </div>
   </body>
