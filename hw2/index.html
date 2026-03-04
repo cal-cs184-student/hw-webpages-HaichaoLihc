@@ -161,7 +161,7 @@
       <header class="panel hero">
         <h1>CS184/284A Spring 2026 Homework 2 Write-Up</h1>
         <div class="meta">
-          <div><strong>Name:</strong> Haichao Li</div>
+          <div><strong>Name:</strong> Haichao Li, Yuanbo Pang</div>
           <div>
             <strong>Webpage:</strong>
             <a href="https://cal-cs184-student.github.io/hw-webpages-HaichaoLihc/"
@@ -185,6 +185,10 @@
           Casteljau subdivision for Bezier curves, separable 1D de Casteljau
           evaluation for Bezier patches, area-weighted vertex normals for shading,
           and local edge flip on the half-edge mesh.
+        </p>
+        <p>
+          I then completed Parts 5-6 with edge split (including boundary-edge split
+          extra credit) and Loop subdivision upsampling.
         </p>
         <p>
           The key challenge was maintaining correct mesh connectivity in Part 4.
@@ -323,11 +327,156 @@
       </section>
 
       <section class="panel">
-        <h2>Part 5-6 Status</h2>
-        <div class="pending">
-          Part 5 (Edge split) and Part 6 (Loop subdivision) are not included in this
-          current draft and will be added after implementation and testing.
+        <h2>Part 5: Edge split</h2>
+        <p>
+          I implemented
+          <code>HalfedgeMesh::splitEdge(EdgeIter e0)</code> as a local remeshing
+          operation on the two triangles adjacent to <code>e0</code>. The routine
+          first rejects boundary edges, then caches both incident faces and all local
+          handles (halfedges <code>h0...h5</code> and their twins, vertices
+          <code>v0...v3</code>, edges <code>e1...e4</code>, and faces
+          <code>f0/f1</code>) before any mutation to avoid invalidating traversal.
+        </p>
+        <p>
+          It allocates one midpoint vertex, three new edges, two new faces, and six
+          new halfedges. The midpoint position is initialized to
+          \[
+            \mathbf{v}_m = \frac{\mathbf{v}_0 + \mathbf{v}_1}{2}.
+          \]
+          After allocation, the implementation rewires all 12 involved halfedges with
+          <code>setNeighbors(...)</code>, then reassigns canonical
+          <code>halfedge()</code> pointers for every touched vertex, edge, and face.
+        </p>
+        <p>
+          The function returns the midpoint vertex, with
+          <code>vm-&gt;halfedge()</code> set to <code>h3</code>, which lies on the
+          original split edge as required by the assignment contract.
+        </p>
+        <div class="image-grid">
+          <figure>
+            <img src="before_split.png" alt="Part 5 before edge split" />
+            <figcaption>Local configuration before splitting the selected edge.</figcaption>
+          </figure>
+          <figure>
+            <img src="after_split.png" alt="Part 5 after edge split" />
+            <figcaption>Same region after edge split creates the midpoint vertex.</figcaption>
+          </figure>
         </div>
+        <div class="image-grid">
+          <figure>
+            <img src="1.png" alt="Part 5 mesh before local edge edits" />
+            <figcaption>Mesh region before local edge flips/splits.</figcaption>
+          </figure>
+          <figure>
+            <img src="2.png" alt="Part 5 mesh after edge flip edits" />
+            <figcaption>Intermediate mesh after edge flips.</figcaption>
+          </figure>
+          <figure>
+            <img src="3.png" alt="Part 5 mesh after edge split edits" />
+            <figcaption>Final mesh after edge splits.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Part 5 Extra Credit: Splitting a boundary edge</h3>
+        <p>
+          For extra credit, I extended
+          <code>HalfedgeMesh::splitEdge(EdgeIter e0)</code> with an
+          <code>e0-&gt;isBoundary()</code> branch while leaving the existing
+          interior-edge split path unchanged.
+        </p>
+        <p>
+          The boundary case first normalizes orientation so <code>h0</code> is the
+          interior halfedge and <code>h3</code> is the boundary halfedge. It then
+          splits only the non-boundary triangle into two triangles, allocating one
+          midpoint vertex, one new face, two new edges, and four new halfedges.
+        </p>
+        <p>
+          To preserve valid boundary connectivity, the virtual boundary loop is also
+          updated by inserting one new boundary halfedge between
+          <code>h3Prev</code> and <code>h3</code>.
+        </p>
+        <div class="image-grid">
+          <figure>
+            <img src="before_boundary_split.png" alt="Part 5 extra credit before boundary edge split" />
+            <figcaption>Boundary configuration before splitting the selected boundary edge.</figcaption>
+          </figure>
+          <figure>
+            <img src="after_boundary_split.png" alt="Part 5 extra credit after boundary edge split" />
+            <figcaption>Boundary configuration after split with updated virtual boundary loop.</figcaption>
+          </figure>
+        </div>
+
+        <h2>Part 6: Loop subdivision</h2>
+        <p>
+          I implemented <code>MeshResampler::upsample(...)</code> using the standard
+          Loop-subdivision pipeline. Before any topology edits, I snapshot the
+          original mesh by copying all original vertices and edges into
+          <code>oldVertices</code> and <code>oldEdges</code>, and initialize all
+          <code>isNew</code> flags to <code>false</code>.
+        </p>
+        <p>
+          Next, I compute <code>Vertex::newPosition</code> for old vertices first.
+          For interior vertices, I use Loop weights:
+          \[
+            \mathbf{v}' = (1 - n u)\mathbf{v} + u\sum_{i=1}^{n}\mathbf{v}_i,
+            \quad
+            u =
+            \begin{cases}
+              \frac{3}{16}, & n = 3\\
+              \frac{3}{8n}, & n > 3
+            \end{cases}
+          \]
+          For boundary vertices, I use
+          \[
+            \mathbf{v}' = \frac{3}{4}\mathbf{v} + \frac{1}{8}
+            (\mathbf{v}_{b0} + \mathbf{v}_{b1}),
+          \]
+          where \(\mathbf{v}_{b0}, \mathbf{v}_{b1}\) are the two boundary neighbors.
+        </p>
+        <p>
+          I then compute <code>Edge::newPosition</code> for old edges. For interior
+          edges with endpoints \(\mathbf{a}, \mathbf{b}\) and opposite vertices
+          \(\mathbf{c}, \mathbf{d}\), I use
+          \[
+            \mathbf{m} = \frac{3}{8}(\mathbf{a} + \mathbf{b}) +
+            \frac{1}{8}(\mathbf{c} + \mathbf{d}).
+          \]
+          For boundary edges, I use the midpoint rule.
+        </p>
+        <p>
+          Topology updates split only original interior edges from
+          <code>oldEdges</code>. For each split, I assign the created midpoint
+          <code>m-&gt;newPosition = e-&gt;newPosition</code> and mark
+          <code>m-&gt;isNew = true</code>. After splitting, I flip only new cross
+          edges connecting one old and one new vertex, identified by
+          <code>va-&gt;isNew ^ vb-&gt;isNew</code>.
+        </p>
+        <p>
+          Finally, I commit the subdivision by copying
+          <code>newPosition -&gt; position</code> for all vertices.
+        </p>
+        <div class="image-grid">
+          <figure>
+            <img src="intial cube.png" alt="Part 6 initial cube before Loop subdivision" />
+            <figcaption>Initial cube before upsampling.</figcaption>
+          </figure>
+          <figure>
+            <img src="subdivide no split.png" alt="Part 6 Loop subdivision without pre-splitting cube edges" />
+            <figcaption>Loop subdivision result without pre-splitting.</figcaption>
+          </figure>
+          <figure>
+            <img src="subdivide split first.png" alt="Part 6 Loop subdivision after splitting cube edges first" />
+            <figcaption>Loop subdivision after pre-splitting</figcaption>
+          </figure>
+        </div>
+        <p>
+          After Loop subdivision, sharp corners and edges become much smoother,
+          especially on the cube. Without pre-processing, subdividing twice also
+          produced a noticeably asymmetrical shape. I reduced this effect by first
+          splitting the middle edge; after two subdivision steps, the result looked
+          more symmetrical. Splitting edges before subdivision adds local degrees of
+          freedom, so the limit surface can better approximate the original features.
+        </p>
       </section>
     </div>
   </body>
