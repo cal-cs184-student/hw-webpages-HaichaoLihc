@@ -1,116 +1,334 @@
-<html>
-	<head>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-		<style>
-			h1 {
-				text-align: center;
-			}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CS184 HW2 Write-Up</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f4f6f8;
+        --panel: #ffffff;
+        --ink: #1f2937;
+        --muted: #5b6472;
+        --line: #d6dde6;
+        --accent: #0f6d7a;
+      }
 
-			.container {
-				margin: 0 auto;
-				padding: 60px 20%;
-			}
+      * {
+        box-sizing: border-box;
+      }
 
-			figure {
-				text-align: center;
-			}
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 10%, #dde8ef 0, transparent 35%),
+          radial-gradient(circle at 88% 6%, #e9efdf 0, transparent 33%),
+          var(--bg);
+      }
 
-			img {
-				display: inline-block;
-			}
+      .container {
+        width: min(1080px, 94vw);
+        margin: 42px auto;
+      }
 
-			body {
-				font-family: 'Inter', sans-serif;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-		<h1>CS184/284A Spring 2025 Homework 2 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
 
-		<br>
+      .hero {
+        padding: 28px;
+        margin-bottom: 22px;
+      }
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+      h1,
+      h2,
+      h3 {
+        font-family: "Source Serif 4", serif;
+        margin: 0;
+      }
 
-		<br>
-		
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+      h1 {
+        font-size: clamp(1.9rem, 4vw, 2.4rem);
+        text-align: center;
+      }
 
-		<figure>
-			<img src="teapot.png" alt="Teapot" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+      .meta {
+        margin-top: 14px;
+        text-align: center;
+        color: var(--muted);
+        line-height: 1.6;
+      }
 
-		<!--
-		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
-		-->
+      .meta a {
+        color: var(--accent);
+      }
 
-		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+      section {
+        padding: 24px;
+        margin-bottom: 18px;
+      }
 
-		<h2>Section I: Bezier Curves and Surfaces</h2>
+      h2 {
+        font-size: 1.55rem;
+        margin-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 8px;
+      }
 
-		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      h3 {
+        font-size: 1.1rem;
+        margin: 16px 0 10px;
+      }
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>
+      p,
+      li {
+        line-height: 1.65;
+      }
 
-		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      ul {
+        margin: 10px 0 12px 20px;
+      }
 
-		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
+      .image-grid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 14px;
+      }
 
-		<h3>Part 3: Area-weighted vertex normals</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      figure {
+        margin: 0;
+      }
 
-		<h3>Part 4: Edge flip</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      img {
+        width: 100%;
+        display: block;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
 
-		<h3>Part 5: Edge split</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      figcaption {
+        margin-top: 6px;
+        font-size: 0.93rem;
+        color: var(--muted);
+        text-align: center;
+      }
 
-		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      .placeholder {
+        min-height: 180px;
+        width: 100%;
+        border: 1px dashed #94a3b8;
+        border-radius: 10px;
+        background: #f8fafc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 14px;
+        color: #475569;
+        font-size: 0.95rem;
+      }
 
-		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      .pending {
+        padding: 10px 14px;
+        border-left: 4px solid #94a3b8;
+        background: #f8fafc;
+        color: #334155;
+      }
 
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
-		</div>
-	</body>
+      code {
+        background: #f1f5f9;
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="panel hero">
+        <h1>CS184/284A Spring 2026 Homework 2 Write-Up</h1>
+        <div class="meta">
+          <div><strong>Name:</strong> Haichao Li</div>
+          <div>
+            <strong>Webpage:</strong>
+            <a href="https://cal-cs184-student.github.io/hw-webpages-HaichaoLihc/"
+              >https://cal-cs184-student.github.io/hw-webpages-HaichaoLihc/</a
+            >
+          </div>
+          <div>
+            <strong>GitHub:</strong>
+            <a href="https://github.com/cal-cs184-student/hw2-meshedit-hhh"
+              >https://github.com/cal-cs184-student/hw2-meshedit-hhh</a
+            >
+          </div>
+        </div>
+      </header>
+
+      <section class="panel">
+        <h2>Overview</h2>
+        <p>
+          In the first half of Homework 2, I implemented the core geometry and mesh
+          operations for Parts 1-4 in <code>student_code.cpp</code>: one-step de
+          Casteljau subdivision for Bezier curves, separable 1D de Casteljau
+          evaluation for Bezier patches, area-weighted vertex normals for shading,
+          and local edge flip on the half-edge mesh.
+        </p>
+        <p>
+          The key challenge was maintaining correct mesh connectivity in Part 4.
+          Unlike the curve and surface parts where the logic is purely numerical,
+          edge flip requires consistent updates of <code>next</code>,
+          <code>twin</code>, <code>vertex</code>, <code>edge</code>, and
+          <code>face</code> pointers in a local neighborhood while preserving
+          manifold structure.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Section I: Bezier Curves and Surfaces</h2>
+
+        <h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+        <p>
+          I implemented <code>BezierCurve::evaluateStep(...)</code> to produce the
+          next control polygon level from the current one. For each consecutive pair
+          of points \(P_i, P_{i+1}\), I compute
+          \((1-t)P_i + tP_{i+1}\) using the current curve parameter
+          <code>t</code>. If the input level has \(n\) points, the output level has
+          \(n-1\) points.
+        </p>
+        <p>
+          Repeatedly pressing <code>E</code> in the GUI visualizes these intermediate
+          levels until a single point remains; this is exactly the evaluated Bezier
+          point at parameter <code>t</code>. The implementation is linear in the
+          number of points for each step.
+        </p>
+
+        <div class="image-grid">
+          <figure>
+            <img src="part1_curve_input.png" alt="Part 1 initial control polygon" />
+            <figcaption>Initial control polygon.</figcaption>
+          </figure>
+          <figure>
+            <img src="part1_curve_level1.png" alt="Part 1 after one de Casteljau step" />
+            <figcaption>After one de Casteljau step.</figcaption>
+          </figure>
+          <figure>
+            <img src="part1_curve_level2.png" alt="Part 1 intermediate de Casteljau level" />
+            <figcaption>Intermediate subdivision level.</figcaption>
+          </figure>
+          <figure>
+            <img src="part1_curve_final.png" alt="Part 1 final Bezier point and curve" />
+            <figcaption>Final evaluated point and full curve visualization.</figcaption>
+          </figure>
+        </div>
+
+        <h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
+        <p>
+          I implemented three functions:
+          <code>BezierPatch::evaluateStep(...)</code>,
+          <code>BezierPatch::evaluate1D(...)</code>, and
+          <code>BezierPatch::evaluate(u, v)</code>. The patch evaluation is done by
+          separable 1D de Casteljau:
+        </p>
+        <ul>
+          <li>First evaluate each row of 4 control points at parameter <code>u</code>.</li>
+          <li>Collect the 4 resulting points into a new 1D control set.</li>
+          <li>Evaluate that set at parameter <code>v</code> to get the final 3D point.</li>
+        </ul>
+        <p>
+          This matches the standard tensor-product Bezier patch construction and
+          produces smooth surfaces for both provided inputs (e.g., teapot and wavy
+          cube).
+        </p>
+
+        <div class="image-grid">
+          <figure>
+            <img src="part2_teapot.png" alt="Part 2 Bezier patch teapot result" />
+            <figcaption>Bezier patch result on teapot input.</figcaption>
+          </figure>
+          <figure>
+            <img src="part2_wavy_cube.png" alt="Part 2 Bezier patch wavy cube result" />
+            <figcaption>Bezier patch result on wavy cube input.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
+
+        <h3>Part 3: Area-weighted vertex normals</h3>
+        <p>
+          I implemented <code>Vertex::normal()</code> by traversing all incident
+          halfedges around the current vertex using <code>h = h->twin()->next()</code>.
+          For each non-boundary face, I compute an area-weighted face normal using a
+          cross product from local triangle edges and accumulate it:
+          \[
+            n \mathrel{+}= (p_1 - p_0) \times (p_2 - p_0)
+          \]
+          where \(p_0\) is the current vertex position.
+        </p>
+        <p>
+          The final normal is <code>n.unit()</code>. This gives smooth shading when
+          pressing <code>Q</code> in the viewer, compared to faceted shading with
+          per-face normals.
+        </p>
+
+        <div class="image-grid">
+          <figure>
+            <img src="part3_flat_shading.png" alt="Part 3 flat shading without vertex normals" />
+            <figcaption>Without vertex normals.</figcaption>
+          </figure>
+          <figure>
+            <img src="part3_vertex_normals.png" alt="Part 3 smooth shading with vertex normals" />
+            <figcaption>With area-weighted vertex normals enabled (Q).</figcaption>
+          </figure>
+        </div>
+
+        <h3>Part 4: Edge flip</h3>
+        <p>
+          I implemented <code>HalfedgeMesh::flipEdge(EdgeIter e0)</code> as a local
+          connectivity rewrite on the two triangles adjacent to <code>e0</code>. The
+          implementation first rejects boundary edges, then relinks the six local
+          halfedges and updates associated vertex/edge/face halfedge pointers.
+        </p>
+        <p>
+          The operation changes the diagonal of a quad from
+          \((v_0, v_1)\) to \((v_2, v_3)\) without creating or deleting mesh
+          elements, and preserves manifold connectivity when applied to a valid
+          interior edge.
+        </p>
+
+        <div class="image-grid">
+          <figure>
+            <img src="part4_before_flip.png" alt="Part 4 before edge flip" />
+            <figcaption>Selected interior edge before pressing F.</figcaption>
+          </figure>
+          <figure>
+            <img src="part4_after_flip.png" alt="Part 4 after edge flip" />
+            <figcaption>Same local region after edge flip.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Part 5-6 Status</h2>
+        <div class="pending">
+          Part 5 (Edge split) and Part 6 (Loop subdivision) are not included in this
+          current draft and will be added after implementation and testing.
+        </div>
+      </section>
+    </div>
+  </body>
 </html>
