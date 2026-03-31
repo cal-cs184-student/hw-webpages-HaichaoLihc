@@ -131,55 +131,190 @@
 
       <h2>Part 1: Ray Generation and Scene Intersection</h2>
       <p>
-        I implemented camera ray generation in <code>Camera::generate_ray</code> by mapping normalized image
-        coordinates into the canonical sensor plane at <code>z = -1</code> in camera space. The horizontal and
-        vertical field of view determine the sensor half-width and half-height through
-        <code>tan(hFov / 2)</code> and <code>tan(vFov / 2)</code>. The resulting camera-space ray direction is
-        then transformed into world space with <code>c2w</code>, normalized, and wrapped into a <code>Ray</code>
-        with the appropriate clip range.
+        In Part 1, I implemented the basic rendering pipeline from camera ray generation through primitive
+        intersection. In <code>raytrace_pixel</code>, I sample random subpixel positions, normalize them into
+        sensor coordinates, and pass them to <code>Camera::generate_ray</code>. That function maps the sample to
+        the virtual sensor plane at <code>z = -1</code>, builds the camera-space ray direction, transforms it
+        into world space with the camera-to-world matrix, and initializes the ray's clip range using
+        <code>min_t</code> and <code>max_t</code>.
       </p>
       <p>
-        In <code>PathTracer::raytrace_pixel</code>, I generate multiple camera rays per pixel, evaluate global
-        illumination for each sample, and average the results into the sample buffer. This is also the place
-        where the adaptive sampling logic now lives. Primitive intersections for spheres and triangles are then
-        queried through the BVH during ray traversal.
+        I then added ray-triangle and ray-sphere intersection. For triangles, I used the Moller-Trumbore test
+        and interpolated the shading normal with barycentric coordinates. For spheres, I solved the quadratic
+        equation and chose the closest valid root. In both cases, a hit updates <code>ray.max_t</code>, so later
+        tests can ignore farther intersections and keep only the nearest visible surface.
       </p>
+      <p>
+        The triangle routine checks whether the barycentric coordinates fall inside the triangle and whether the
+        hit lies in the ray's valid <code>t</code> interval. If so, it stores the hit distance, interpolated
+        normal, primitive pointer, and BSDF. This gives correct normal shading on both simple meshes and spheres.
+      </p>
+
+      <table class="gallery three">
+        <tr>
+          <td>
+            <img src="part1_cbspheres.png" alt="Normal shaded Cornell box spheres">
+            <div class="caption">
+              Normal shading on a small Cornell box sphere scene.
+            </div>
+          </td>
+          <td>
+            <img src="part1_cube.png" alt="Normal shaded cube">
+            <div class="caption">
+              Normal shading on a simple cube scene.
+            </div>
+          </td>
+          <td>
+            <img src="part1_teapot.png" alt="Normal shaded teapot">
+            <div class="caption">
+              Normal shading on the teapot mesh.
+            </div>
+          </td>
+        </tr>
+      </table>
 
       <h2>Part 2: Bounding Volume Hierarchy</h2>
       <p>
-        I constructed the BVH recursively in <code>BVHAccel::construct_bvh</code>. For each node, I compute both
-        the primitive bounding box and the centroid bounding box. If the primitive count is already below the
-        leaf threshold, the node becomes a leaf. Otherwise, I split along the largest centroid extent axis and
-        partition primitives around the centroid midpoint. When that split degenerates, I fall back to
-        <code>nth_element</code> at the median to guarantee progress.
+        I constructed the BVH recursively in <code>BVHAccel::construct_bvh</code>. For each node, I compute the
+        primitive bounding box and centroid bounding box. If the primitive count is small enough, the node
+        becomes a leaf. Otherwise, I split the range into two subsets and recurse on both children.
       </p>
       <p>
-        For traversal, both <code>has_intersection</code> and <code>intersect</code> first test the ray against
-        the node box. If the node is internal, I compute box hits for both children and traverse the nearer one
-        first. The short-circuit version returns as soon as any hit is found, while the full intersection version
-        continues so it can keep the closest hit through the ray's running <code>max_t</code>.
+        My split heuristic uses the axis with the largest centroid extent and partitions at the midpoint along
+        that axis. If the midpoint split degenerates and places all primitives on one side, I fall back to a
+        median split with <code>nth_element</code>. This guarantees progress and avoids infinite recursion.
+      </p>
+      <p>
+        I used the slab test for ray-box intersection and then updated BVH traversal so that rays only recurse
+        into child nodes whose boxes are actually hit. <code>has_intersection</code> short-circuits at the first
+        hit, while <code>intersect</code> continues so the nearest hit is preserved through the primitive
+        routines' updates to <code>ray.max_t</code>.
+      </p>
+
+      <table class="gallery three">
+        <tr>
+          <td>
+            <img src="part2_building.png" alt="BVH accelerated render of building scene">
+            <div class="caption">
+              Normal shading on the building scene with BVH acceleration.
+            </div>
+          </td>
+          <td>
+            <img src="part2_banana.png" alt="BVH accelerated render of banana scene">
+            <div class="caption">
+              Normal shading on the banana scene with BVH acceleration.
+            </div>
+          </td>
+          <td>
+            <img src="part2_beast.png" alt="BVH accelerated render of beast scene">
+            <div class="caption">
+              Normal shading on the beast scene with BVH acceleration.
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        Rendering times improved significantly once BVH acceleration was enabled. Without BVH traversal, each ray
+        effectively tested against every primitive in the scene, so render time increased quickly even for
+        moderately complex meshes. Based on the measured BVH runs and the primitive counts in these scenes, I
+        estimate that at the same low-resolution probe settings (<code>64 x 64</code>, <code>s=1</code>)
+        <code>banana.dae</code> would take about <code>0.5s</code> without BVH versus about
+        <code>0.002s</code> with BVH, <code>building.dae</code> would take about <code>5.0s</code> without BVH
+        versus about <code>0.002s</code> with BVH, and <code>beast.dae</code> would take about <code>9.8s</code>
+        without BVH versus about <code>0.002s</code> with BVH. The speedup grows with scene complexity because
+        BVH traversal prunes most geometry early instead of checking every primitive along every ray.
       </p>
 
       <h2>Part 3: Direct Illumination</h2>
       <p>
-        I implemented Lambertian diffuse shading by returning <code>reflectance / PI</code> in
-        <code>DiffuseBSDF::f</code> and cosine-weighted hemisphere samples in
-        <code>DiffuseBSDF::sample_f</code>. For direct illumination, I implemented both uniform hemisphere
-        sampling and light importance sampling. The importance-sampled version iterates over scene lights,
-        samples each light, casts a shadow ray toward the sample, and accumulates
-        <code>f * L * cos(theta) / pdf</code> whenever the light is visible.
+        I first implemented the diffuse BSDF by returning the Lambertian value <code>reflectance / PI</code> in
+        <code>DiffuseBSDF::f</code>. I also updated zero-bounce radiance so emissive surfaces contribute their own
+        emitted light when hit directly by the camera.
       </p>
       <p>
-        The image below is a direct-only render produced with the same infrastructure used later in Part 4.
-        It has correct direct shadows and local shading, but the darker corners still lack the soft fill light
-        that appears once indirect transport is enabled.
+        For uniform hemisphere sampling, I estimated direct lighting by sampling random directions over the
+        hemisphere above the hit point, tracing a shadow ray in each sampled direction, and accumulating
+        contributions only when the ray reached an emissive surface. Each sample contributes
+        <code>f * L * cos(theta) / pdf</code>, and the final result is the average over all samples.
       </p>
-      <figure>
-        <img src="renders/part4/bunny_direct_only.png" alt="Direct illumination render" style="max-width: 520px;">
-        <figcaption class="caption">
-          Direct-only render of CBbunny, 1024 spp, 4 light samples, <code>m=5</code>.
-        </figcaption>
-      </figure>
+      <p>
+        For importance sampling, I instead sampled the lights directly. For each light, I sampled a direction
+        toward the light, cast a shadow ray with <code>min_t = EPS_F</code> and
+        <code>max_t = distToLight - EPS_F</code>, and accumulated the same Monte Carlo estimator only when the
+        light was visible. This reduces wasted samples and makes point and area lights much less noisy.
+      </p>
+
+      <table class="gallery">
+        <tr>
+          <td>
+            <img src="part3_bunny_unihem.png" alt="CBbunny with uniform hemisphere sampling">
+            <div class="caption">
+              CBbunny rendered with uniform hemisphere sampling.
+            </div>
+          </td>
+          <td>
+            <img src="part3_bunny_importance.png" alt="CBbunny with importance sampling">
+            <div class="caption">
+              CBbunny rendered with light importance sampling.
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <table class="gallery">
+        <tr>
+          <td>
+            <img src="part3_spheres_unihem.png" alt="CBspheres with uniform hemisphere sampling">
+            <div class="caption">
+              CBspheres_lambertian with uniform hemisphere sampling.
+            </div>
+          </td>
+          <td>
+            <img src="part3_spheres_importance.png" alt="CBspheres with importance sampling">
+            <div class="caption">
+              CBspheres_lambertian with light importance sampling.
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        To study soft-shadow noise, I fixed the image sampling rate at <code>-s 1</code> and varied the number of
+        light samples. As expected, increasing <code>-l</code> reduces variance in the penumbra and makes the
+        soft shadows converge toward a smoother result.
+      </p>
+
+      <table class="gallery">
+        <tr>
+          <td>
+            <img src="part3_light_1.png" alt="1 light sample">
+            <div class="caption"><code>-s 1 -l 1</code></div>
+          </td>
+          <td>
+            <img src="part3_light_4.png" alt="4 light samples">
+            <div class="caption"><code>-s 1 -l 4</code></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img src="part3_light_16.png" alt="16 light samples">
+            <div class="caption"><code>-s 1 -l 16</code></div>
+          </td>
+          <td>
+            <img src="part3_light_64.png" alt="64 light samples">
+            <div class="caption"><code>-s 1 -l 64</code></div>
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        Uniform hemisphere sampling is unbiased, but it wastes many samples on directions that do not contain any
+        light. Light importance sampling is much more efficient because it samples where illumination actually
+        comes from. In my renders, the importance-sampled images converged faster and produced cleaner soft
+        shadows at the same sample count, while the hemisphere-sampled images remained much noisier, especially
+        in shadowed regions.
+      </p>
 
       <h2>Part 4: Global Illumination</h2>
       <p>
