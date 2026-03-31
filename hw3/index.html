@@ -1,106 +1,533 @@
 <html>
-	<head>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-		<style>
-			h1 {
-				text-align: center;
-			}
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        line-height: 1.55;
+      }
 
-			.container {
-				margin: 0 auto;
-				padding: 60px 20%;
-			}
+      h1, h2 {
+        text-align: center;
+      }
 
-			figure {
-				text-align: center;
-			}
+      .container {
+        margin: 0 auto;
+        max-width: 1200px;
+        padding: 48px 32px 64px;
+      }
 
-			img {
-				display: inline-block;
-			}
+      .meta {
+        text-align: center;
+        margin-bottom: 24px;
+      }
 
-			body {
-				font-family: 'Inter', sans-serif;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-		<h1>CS184/284A Spring 2025 Homework 3 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+      .meta a {
+        color: #0a58ca;
+        text-decoration: none;
+      }
 
-		<br>
+      figure {
+        text-align: center;
+        margin: 24px 0;
+      }
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
-		
-		<figure>
-			<img src="cornell.png" alt="Cornell Boxes with Bunnies" style="width:70%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+      img {
+        display: inline-block;
+        max-width: 100%;
+        height: auto;
+      }
 
-		<!--
-		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
-		-->
+      .gallery {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 16px 0 28px;
+      }
 
-		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+      .gallery td {
+        width: 50%;
+        padding: 10px;
+        text-align: center;
+        vertical-align: top;
+      }
 
-		<h2>Part 1: Ray Generation and Scene Intersection</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      .gallery.three td {
+        width: 33.33%;
+      }
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="cornell.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>
-		
-		<h2>Part 2: Bounding Volume Hierarchy</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      .gallery img {
+        width: 100%;
+        max-width: 360px;
+      }
 
-		<h2>Part 3: Direct Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      .caption {
+        font-size: 14px;
+        margin-top: 8px;
+      }
 
-		<h2>Part 4: Global Illumination</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      .command {
+        text-align: center;
+        font-size: 14px;
+        color: #444;
+        margin: 8px 0 20px;
+      }
 
-		<h2>Part 5: Adaptive Sampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      code {
+        background: #f5f5f5;
+        padding: 1px 4px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>CS184/284A Spring 2026 Homework 3 Write-Up</h1>
+      <div class="meta">
+        <div><b>Names:</b> Haichao Li, Arron</div>
+        <div>
+          <b>Webpage:</b>
+          <a href="https://cal-cs184-student.github.io/hw-webpages-HaichaoLihc/hw3/">
+            https://cal-cs184-student.github.io/hw-webpages-HaichaoLihc/hw3/
+          </a>
+        </div>
+        <div>
+          <b>Write-up Repo:</b>
+          <a href="https://github.com/cal-cs184-student/hw-webpages-HaichaoLihc">
+            https://github.com/cal-cs184-student/hw-webpages-HaichaoLihc
+          </a>
+        </div>
+        <div>
+          <b>Code Repo:</b>
+          <a href="https://github.com/cal-cs184-student/hw3-pathtracer-haichao-arron">
+            https://github.com/cal-cs184-student/hw3-pathtracer-haichao-arron
+          </a>
+        </div>
+      </div>
 
-		<h2>(Optional) Part 6: Extra Credit Opportunities</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-		
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
-		</div>
-	</body>
+      <figure>
+        <img src="renders/part4/bunny_accum_m5.png" alt="CBbunny global illumination render" style="max-width: 720px;">
+        <figcaption class="caption">
+          CBbunny with accumulated global illumination, 1024 spp, 4 light samples, <code>m=5</code>.
+        </figcaption>
+      </figure>
+
+      <h2>Overview</h2>
+      <p>
+        In this homework, I built the core pieces of a Monte Carlo path tracer. Starting from camera ray
+        generation and primitive intersection, I added BVH acceleration, direct lighting with both hemisphere
+        and importance sampling, recursive global illumination with Russian Roulette, and adaptive sampling.
+        For extra credit, I also replaced the original pure random pixel sampler with a jittered stratified
+        sampler and compared the two sampling strategies at the same spp.
+      </p>
+      <p>
+        The most interesting part of the assignment was seeing how each stage changes the character of the
+        image. Direct illumination produces a recognizable scene, but the image still feels flat. Once indirect
+        transport is added, corners brighten, shadowed regions pick up bounced light, and the whole render feels
+        more physically plausible. Adaptive sampling then makes the computation itself more interesting, since
+        the renderer naturally spends more work on edges, shadow boundaries, and difficult indirect-lighting
+        regions.
+      </p>
+
+      <h2>Part 1: Ray Generation and Scene Intersection</h2>
+      <p>
+        I implemented camera ray generation in <code>Camera::generate_ray</code> by mapping normalized image
+        coordinates into the canonical sensor plane at <code>z = -1</code> in camera space. The horizontal and
+        vertical field of view determine the sensor half-width and half-height through
+        <code>tan(hFov / 2)</code> and <code>tan(vFov / 2)</code>. The resulting camera-space ray direction is
+        then transformed into world space with <code>c2w</code>, normalized, and wrapped into a <code>Ray</code>
+        with the appropriate clip range.
+      </p>
+      <p>
+        In <code>PathTracer::raytrace_pixel</code>, I generate multiple camera rays per pixel, evaluate global
+        illumination for each sample, and average the results into the sample buffer. This is also the place
+        where the adaptive sampling logic now lives. Primitive intersections for spheres and triangles are then
+        queried through the BVH during ray traversal.
+      </p>
+
+      <h2>Part 2: Bounding Volume Hierarchy</h2>
+      <p>
+        I constructed the BVH recursively in <code>BVHAccel::construct_bvh</code>. For each node, I compute both
+        the primitive bounding box and the centroid bounding box. If the primitive count is already below the
+        leaf threshold, the node becomes a leaf. Otherwise, I split along the largest centroid extent axis and
+        partition primitives around the centroid midpoint. When that split degenerates, I fall back to
+        <code>nth_element</code> at the median to guarantee progress.
+      </p>
+      <p>
+        For traversal, both <code>has_intersection</code> and <code>intersect</code> first test the ray against
+        the node box. If the node is internal, I compute box hits for both children and traverse the nearer one
+        first. The short-circuit version returns as soon as any hit is found, while the full intersection version
+        continues so it can keep the closest hit through the ray's running <code>max_t</code>.
+      </p>
+
+      <h2>Part 3: Direct Illumination</h2>
+      <p>
+        I implemented Lambertian diffuse shading by returning <code>reflectance / PI</code> in
+        <code>DiffuseBSDF::f</code> and cosine-weighted hemisphere samples in
+        <code>DiffuseBSDF::sample_f</code>. For direct illumination, I implemented both uniform hemisphere
+        sampling and light importance sampling. The importance-sampled version iterates over scene lights,
+        samples each light, casts a shadow ray toward the sample, and accumulates
+        <code>f * L * cos(theta) / pdf</code> whenever the light is visible.
+      </p>
+      <p>
+        The image below is a direct-only render produced with the same infrastructure used later in Part 4.
+        It has correct direct shadows and local shading, but the darker corners still lack the soft fill light
+        that appears once indirect transport is enabled.
+      </p>
+      <figure>
+        <img src="renders/part4/bunny_direct_only.png" alt="Direct illumination render" style="max-width: 520px;">
+        <figcaption class="caption">
+          Direct-only render of CBbunny, 1024 spp, 4 light samples, <code>m=5</code>.
+        </figcaption>
+      </figure>
+
+      <h2>Part 4: Global Illumination</h2>
+      <p>
+        I implemented global illumination by completing <code>DiffuseBSDF::sample_f</code>,
+        <code>PathTracer::at_least_one_bounce_radiance</code>, and
+        <code>PathTracer::est_radiance_global_illumination</code>. For diffuse materials,
+        <code>sample_f</code> samples an incoming direction from a cosine-weighted hemisphere distribution,
+        writes that direction into <code>wi</code>, stores the corresponding PDF, and returns the Lambertian BRDF
+        value <code>reflectance / PI</code>.
+      </p>
+      <p>
+        The recursive logic lives in <code>at_least_one_bounce_radiance</code>. At each hit point, I first
+        compute the one-bounce radiance using the direct-lighting routine. Then I sample a new BSDF direction in
+        local coordinates, transform it into world coordinates, and trace a bounce ray from the hit point with an
+        <code>EPS_F</code> offset. If the ray hits another surface, I recursively estimate the radiance coming
+        from that direction and weight it by the BRDF, cosine term, PDF, and Russian Roulette continuation
+        probability:
+      </p>
+      <p style="text-align:center;">
+        <code>L<sub>indirect</sub> = f(w<sub>o</sub>, w<sub>i</sub>) * L<sub>recursive</sub> * cos(theta) / (pdf * p)</code>
+      </p>
+      <p>
+        I also implemented the accumulated and unaccumulated bounce modes controlled by <code>isAccumBounces</code>.
+        In accumulated mode, the renderer sums direct light and all higher-order bounces up to the depth limit.
+        In unaccumulated mode, the recursion isolates the exact <code>m</code>-th bounce so each bounce can be
+        visualized on its own. For the direct-only and indirect-only comparison images below, I isolated the
+        corresponding terms of the lighting decomposition while keeping the same recursive transport estimator.
+      </p>
+
+      <p class="command">
+        Part 4 renders used <code>-t 8 -r 200 150 -l 4</code> unless noted otherwise.
+      </p>
+
+      <table class="gallery">
+        <tr>
+          <td>
+            <img src="renders/part4/bunny_accum_m5.png" alt="CBbunny global illumination">
+            <div class="caption">
+              CBbunny with full global illumination, 1024 spp, accumulated bounces, <code>m=5</code>.
+            </div>
+          </td>
+          <td>
+            <img src="renders/part4/spheres_spp1024.png" alt="CBspheres global illumination">
+            <div class="caption">
+              CBspheres_lambertian with full global illumination, 1024 spp, 4 light samples.
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        The difference between direct-only and indirect-only illumination is clear in the bunny renders. The
+        direct-only image carries the sharp shadow structure and the primary shading gradients from the ceiling
+        light. The indirect-only image removes those direct contributions and isolates the soft fill light that
+        bounces off the Cornell box walls and floor. That indirect view is much dimmer overall, but it is exactly
+        what makes the full render feel soft and plausible instead of harsh.
+      </p>
+
+      <table class="gallery">
+        <tr>
+          <td>
+            <img src="renders/part4/bunny_direct_only.png" alt="CBbunny direct-only illumination">
+            <div class="caption">
+              Direct-only lighting, 1024 spp.
+            </div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_indirect_only.png" alt="CBbunny indirect-only illumination">
+            <div class="caption">
+              Indirect-only lighting, 1024 spp.
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        The accumulated bounce sequence shows how the image progressively converges toward the final global
+        illumination solution as more bounce depth is allowed. The <code>m=0</code> image is almost black because
+        the camera does not directly see the light source, so only zero-bounce emission is visible. By
+        <code>m=1</code>, the bunny and walls are directly lit. The images from <code>m=2</code> onward brighten
+        the shadowed regions and soften the lighting as interreflection starts to dominate dark corners.
+      </p>
+
+      <table class="gallery three">
+        <tr>
+          <td>
+            <img src="renders/part4/bunny_accum_m0.png" alt="Accumulated m0">
+            <div class="caption">Accumulated <code>m=0</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_accum_m1.png" alt="Accumulated m1">
+            <div class="caption">Accumulated <code>m=1</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_accum_m2.png" alt="Accumulated m2">
+            <div class="caption">Accumulated <code>m=2</code>.</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img src="renders/part4/bunny_accum_m3.png" alt="Accumulated m3">
+            <div class="caption">Accumulated <code>m=3</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_accum_m4.png" alt="Accumulated m4">
+            <div class="caption">Accumulated <code>m=4</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_accum_m5.png" alt="Accumulated m5">
+            <div class="caption">Accumulated <code>m=5</code>.</div>
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        The unaccumulated sequence isolates each exact bounce. Here, <code>m=1</code> corresponds to direct
+        illumination, while <code>m=2</code> and <code>m=3</code> are the first two truly indirect transport
+        terms. These are the bounces that noticeably brighten the bunny's underside, the back wall, and the lower
+        corners of the box. Compared to rasterization, these higher-order bounces are what produce soft global
+        fill light instead of a flat ambient approximation.
+      </p>
+
+      <table class="gallery three">
+        <tr>
+          <td>
+            <img src="renders/part4/bunny_unaccum_m0.png" alt="Unaccumulated m0">
+            <div class="caption">Unaccumulated <code>m=0</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_unaccum_m1.png" alt="Unaccumulated m1">
+            <div class="caption">Unaccumulated <code>m=1</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_unaccum_m2.png" alt="Unaccumulated m2">
+            <div class="caption">Unaccumulated <code>m=2</code>.</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img src="renders/part4/bunny_unaccum_m3.png" alt="Unaccumulated m3">
+            <div class="caption">Unaccumulated <code>m=3</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_unaccum_m4.png" alt="Unaccumulated m4">
+            <div class="caption">Unaccumulated <code>m=4</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_unaccum_m5.png" alt="Unaccumulated m5">
+            <div class="caption">Unaccumulated <code>m=5</code>.</div>
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        After adding Russian Roulette, I compared <code>CBbunny</code> with accumulated bounces at
+        <code>m=0,1,2,3,4</code>, and a deeper <code>m=100</code> render. The deeper image is only slightly
+        different from the moderate-depth results, which is what we expect once long low-energy paths are being
+        terminated probabilistically. Most of the visible energy arrives within the first few bounces, and the
+        100-bounce render mainly acts as a sanity check that the result has stabilized.
+      </p>
+
+      <table class="gallery three">
+        <tr>
+          <td>
+            <img src="renders/part4/bunny_accum_m0.png" alt="Russian Roulette m0">
+            <div class="caption">Russian Roulette, <code>m=0</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_accum_m1.png" alt="Russian Roulette m1">
+            <div class="caption">Russian Roulette, <code>m=1</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_accum_m2.png" alt="Russian Roulette m2">
+            <div class="caption">Russian Roulette, <code>m=2</code>.</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img src="renders/part4/bunny_accum_m3.png" alt="Russian Roulette m3">
+            <div class="caption">Russian Roulette, <code>m=3</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_accum_m4.png" alt="Russian Roulette m4">
+            <div class="caption">Russian Roulette, <code>m=4</code>.</div>
+          </td>
+          <td>
+            <img src="renders/part4/bunny_accum_m100.png" alt="Russian Roulette m100">
+            <div class="caption">Russian Roulette, <code>m=100</code>.</div>
+          </td>
+        </tr>
+      </table>
+
+      <p>
+        Finally, the sample-count sweep on <code>CBspheres_lambertian</code> shows the expected Monte Carlo
+        convergence trend. At 1 to 8 spp the image is visibly noisy, especially in the walls and shadowed floor.
+        By 16 and 64 spp the scene structure is already stable, but fine noise remains. At 1024 spp the image is
+        much smoother and the indirect-lighting regions are substantially cleaner.
+      </p>
+
+      <table class="gallery three">
+        <tr>
+          <td>
+            <img src="renders/part4/spheres_spp1.png" alt="1 spp">
+            <div class="caption"><code>1</code> spp.</div>
+          </td>
+          <td>
+            <img src="renders/part4/spheres_spp2.png" alt="2 spp">
+            <div class="caption"><code>2</code> spp.</div>
+          </td>
+          <td>
+            <img src="renders/part4/spheres_spp4.png" alt="4 spp">
+            <div class="caption"><code>4</code> spp.</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img src="renders/part4/spheres_spp8.png" alt="8 spp">
+            <div class="caption"><code>8</code> spp.</div>
+          </td>
+          <td>
+            <img src="renders/part4/spheres_spp16.png" alt="16 spp">
+            <div class="caption"><code>16</code> spp.</div>
+          </td>
+          <td>
+            <img src="renders/part4/spheres_spp64.png" alt="64 spp">
+            <div class="caption"><code>64</code> spp.</div>
+          </td>
+        </tr>
+      </table>
+
+      <figure>
+        <img src="renders/part4/spheres_spp1024.png" alt="1024 spp result" style="max-width: 420px;">
+        <figcaption class="caption">
+          <code>1024</code> spp result for the same scene and camera.
+        </figcaption>
+      </figure>
+
+      <h2>Part 5: Adaptive Sampling</h2>
+      <p>
+        Adaptive sampling improves efficiency by stopping early on pixels that have already converged and spending
+        more samples on pixels that are still noisy. Instead of forcing every pixel to use the same maximum sample
+        count, I evaluate convergence on a per-pixel basis using the 95% confidence interval criterion from the
+        spec.
+      </p>
+      <p>
+        My implementation is in <code>PathTracer::raytrace_pixel()</code>. For each pixel, I trace samples and
+        accumulate both the RGB radiance and two scalar statistics based on illuminance:
+      </p>
+      <p style="text-align:center;">
+        <code>s<sub>1</sub> = sum(x<sub>k</sub>)</code> and
+        <code>s<sub>2</sub> = sum(x<sub>k</sub><sup>2</sup>)</code>
+      </p>
+      <p>
+        where <code>x<sub>k</sub></code> is the illuminance of the <code>k</code>-th sample. After every
+        <code>samplesPerBatch</code> samples, I compute the sample mean and variance,
+        then evaluate the confidence interval estimate
+      </p>
+      <p style="text-align:center;">
+        <code>mu = s1 / n</code><br>
+        <code>sigma^2 = (s2 - s1^2 / n) / (n - 1)</code><br>
+        <code>I = 1.96 * sigma / sqrt(n)</code>
+      </p>
+      <p>
+        If <code>I &lt;= maxTolerance * mu</code>, I treat the pixel as converged and stop tracing more rays for
+        that pixel. Otherwise, I continue until convergence or until the maximum budget <code>ns_aa</code> is
+        reached. I also write the actual number of samples used into <code>sampleCountBuffer</code> so the
+        sampling-rate visualization can be produced.
+      </p>
+      <p class="command">
+        Part 5 renders used <code>-t 8 -r 240 180 -s 2048 -a 64 0.05 -l 1 -m 5</code>.
+      </p>
+      <p>
+        The heatmaps match the expected behavior. Smooth walls and large low-variance regions converge quickly and
+        appear blue-green. Edges, shadow transitions, and the more difficult indirect-lighting regions consume far
+        more samples and show up in yellow-red. The final images remain clean while the rate visualizations make
+        the spatial distribution of work very clear.
+      </p>
+
+      <table class="gallery">
+        <tr>
+          <td>
+            <img src="renders/part5/bunny_adaptive.png" alt="Adaptive bunny result">
+            <div class="caption">
+              Adaptive sampling result for CBbunny, maximum 2048 spp.
+            </div>
+          </td>
+          <td>
+            <img src="renders/part5/bunny_adaptive_rate.png" alt="Adaptive bunny rate image">
+            <div class="caption">
+              Corresponding sample-rate heatmap for CBbunny.
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img src="renders/part5/spheres_adaptive.png" alt="Adaptive spheres result">
+            <div class="caption">
+              Adaptive sampling result for CBspheres_lambertian, maximum 2048 spp.
+            </div>
+          </td>
+          <td>
+            <img src="renders/part5/spheres_adaptive_rate.png" alt="Adaptive spheres rate image">
+            <div class="caption">
+              Corresponding sample-rate heatmap for CBspheres_lambertian.
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <h2>(Optional) Part 6: Extra Credit Opportunities</h2>
+      <p>
+        For extra credit, I implemented a jittered stratified pixel sampler. The baseline sampler
+        <code>UniformGridSampler2D</code> draws independent random samples over the unit square. The new
+        <code>JitteredGridSampler2D</code> divides the pixel into a regular grid of strata and places one jittered
+        sample inside each stratum. At the start of each pixel, the sampler computes the grid size as
+        <code>ceil(sqrt(num_samples))</code>. Each call to <code>get_sample()</code> maps the next sample index
+        into one grid cell and then jitters within that cell.
+      </p>
+      <p>
+        I compared the baseline random sampler and the jittered stratified sampler under identical scene settings.
+        I also added a regression test that verifies the jittered sampler places four samples into four different
+        quadrants of the unit square for the 4-sample case.
+      </p>
+      <p>
+        The comparison below uses <code>CBspheres_lambertian</code> at 16 spp. The overall scene is the same, but
+        the jittered sampler distributes subpixel samples more evenly, which reduces clustering and gives slightly
+        cleaner shading and edge transitions at the same sample budget.
+      </p>
+      <p class="command">
+        Extra credit renders used <code>-t 8 -r 200 150 -s 16 -l 4 -m 5</code>.
+      </p>
+
+      <table class="gallery">
+        <tr>
+          <td>
+            <img src="renders/part6/spheres_uniform.png" alt="Uniform random pixel sampling">
+            <div class="caption">
+              Baseline uniform random pixel sampling, 16 spp.
+            </div>
+          </td>
+          <td>
+            <img src="renders/part6/spheres_jittered.png" alt="Jittered stratified pixel sampling">
+            <div class="caption">
+              Jittered stratified pixel sampling, 16 spp.
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
 </html>
